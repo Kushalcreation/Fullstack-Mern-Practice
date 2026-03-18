@@ -9,6 +9,7 @@ app.use(express.json());
 app.use("/api/auth", router);
 
 const PORT = 5000;
+console.log("Starting server...");
 
 connectDb().then(() => {
   app.listen(PORT, () => {
