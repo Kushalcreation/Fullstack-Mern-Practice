@@ -28,12 +28,21 @@ const register = async (req, res) => {
       username,
       email,
       phone,
-      password: hash_password,
+      password,
     });
 
-    res.status(201).json({ msg: userCreated });
+    const token = await userCreated.generateToken();
+
+    console.log("TOKEN =>", token);
+
+    res.status(201).json({
+      msg: "registration successful",
+      token: token,
+      userId: userCreated._id.toString(),
+    });
   } catch (error) {
-    res.status(400).json({ msg: "page not found" });
+    console.error("ERROR:", error); // 👈 MUST ADD
+    res.status(500).json({ msg: "page not found" });
   }
 };
 
