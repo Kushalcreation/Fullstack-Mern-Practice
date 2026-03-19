@@ -41,9 +41,38 @@ const register = async (req, res) => {
       userId: userCreated._id.toString(),
     });
   } catch (error) {
-    console.error("ERROR:", error); // 👈 MUST ADD
-    res.status(500).json({ msg: "page not found" });
+    console.error("ERROR:", error);
+    res.status(500).json("internal server error");
   }
 };
 
-module.exports = { home, register };
+// User login logic
+
+const login = async (req, res) => {
+  try {
+    console.log("log is runnning well");
+    const { email, password } = req.body;
+
+    const userExist = await User.findOne({ email });
+
+    if (!userExist) {
+      return res.status(400).json({ message: "Invalid Credentials" });
+    }
+
+    const user = await bcrypt.compare(password, userExist.password);
+
+    if (user) {
+      res.status(200).json({
+        msg: "Login Successful",
+        token: await userCreated.generateToken(),
+        userId: userCreated._id.toString(),
+      });
+    } else {
+      res.status(401).json({ message: "Invalid emial or password" });
+    }
+  } catch (error) {
+    res.status(500).json("internal server error");
+  }
+};
+
+module.exports = { home, register, login };
